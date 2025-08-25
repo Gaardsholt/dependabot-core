@@ -71,6 +71,8 @@ module Dependabot
 
       sig { returns(T::Array[String]) }
       def labels_for_pr
+        return *default_labels_for_pr if custom_labels&.length
+
         [
           *default_labels_for_pr,
           includes_security_fixes? ? security_label : nil,
@@ -197,7 +199,7 @@ module Dependabot
 
       sig { returns(T.nilable(T::Array[String])) }
       def create_default_dependencies_label_if_required
-        return if custom_labels
+        return if custom_labels&.length
         return if dependencies_label_exists?
 
         create_dependencies_label
@@ -214,7 +216,7 @@ module Dependabot
       sig { returns(T.nilable(T::Array[String])) }
       def create_default_language_label_if_required
         return unless label_language?
-        return if custom_labels
+        return if custom_labels&.length
         return if language_label_exists?
 
         create_language_label
